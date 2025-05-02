@@ -20,6 +20,9 @@ function ProviderRegistration() {
   const [passwordMatch, setPasswordMatch] = useState(true)
   const [providerLogo, setProviderLogo] = useState("")
   const [address, setAddress] = useState("");
+  const [aadhaarNo, setAadhaarNo] = useState("");
+  const [panNo, setPanNo] = useState("");
+  const [gstNo, setGstNo] = useState("");
   const [isSigning, setIsSigning] = useState("");
   const dispatch = useDispatch();
   const handleSubmit = (e) => {
@@ -34,6 +37,10 @@ function ProviderRegistration() {
       form.append("password", password);
       form.append("phoneNumber", phoneNumber);
       form.append("address", address);
+      form.append("aadhaarNo", aadhaarNo);
+      form.append("panNo", panNo);
+      form.append("gstNo", gstNo);
+
       if (providerLogo.length > 0)
         form.append("providerLogo", providerLogo[0])
 
@@ -45,6 +52,9 @@ function ProviderRegistration() {
       setPhoneNumber("");
       setPasswordMatch(true);
       setAddress("")
+      setAadhaarNo("");
+      setPanNo("");
+      setGstNo("");
       setProviderLogo("");
     }
   }
@@ -66,7 +76,7 @@ function ProviderRegistration() {
       <div className='py-2 sm:px-8 px-2 shadow flex justify-between items-center'>
         <Link to="/" className='flex items-center'>
           <img src={logo} className='h-8 object-contain' alt="" />
-          <h1 className='font-bold text-xl font-mono'>Tiffin Wala</h1>
+          <h1 className='font-bold text-xl font-mono'>Tiffin Mitra</h1>
         </Link>
         <Link to="/" className='flex items-center gap-2'>
           <BiArrowBack />
@@ -104,6 +114,45 @@ function ProviderRegistration() {
               </div>
               {!passwordMatch && <small className='text-red-600'>* Password does not match</small>}
             </div>
+            <div className='flex items-center border bg-white w-full'>
+            <span className='px-2 h-full'><FaRegAddressCard /></span>
+            <input
+              type="text"
+              value={aadhaarNo}
+              name="aadhaar"
+              placeholder='Enter Aadhaar Number'
+              className='w-full h-full px-2 py-2 border-l focus:outline-none'
+              required
+              onChange={(e) => setAadhaarNo(e.target.value)}
+            />
+          </div>
+
+          <div className='flex items-center border bg-white w-full'>
+            <span className='px-2 h-full'><FaRegAddressCard /></span>
+            <input
+              type="text"
+              value={panNo}
+              name="pan"
+              placeholder='Enter PAN Number'
+              className='w-full h-full px-2 py-2 border-l focus:outline-none'
+              required
+              onChange={(e) => setPanNo(e.target.value)}
+            />
+          </div>
+
+          <div className='flex items-center border bg-white w-full'>
+            <span className='px-2 h-full'><FaRegAddressCard /></span>
+            <input
+              type="text"
+              value={gstNo}
+              name="gst"
+              placeholder='Enter GST Number'
+              className='w-full h-full px-2 py-2 border-l focus:outline-none'
+              required
+              onChange={(e) => setGstNo(e.target.value)}
+            />
+          </div>
+
             <div className='flex flex-col gap-1'>
               <label htmlFor="logo" className='font-semibold text-slate-800'>Add Logo</label>
               <input type="file" name="logo" id="logo" required onChange={(e) => setProviderLogo(e.target.files)} />

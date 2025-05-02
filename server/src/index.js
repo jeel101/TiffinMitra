@@ -3,71 +3,85 @@ const env = require('dotenv')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
+const CronJob = require('cron').CronJob;
+
 const user = require('./routes/User');
 const provider = require('./routes/provider');
-const food = require('./routes/foods')
-const order = require('./routes/order')
+const food = require('./routes/foods');
+const order = require('./routes/order');
 const address = require('./routes/address');
-const review = require('./routes/review')
+const review = require('./routes/review');
+const initialData = require('./routes/initialData');
 
-const CronJob = require('cron').CronJob;
-const initialData = require('./routes/initialData')
-const foodModel = require('./models/food')
+const foodModel = require('./models/food');
+const Provider = require('./models/provider'); // <-- Required for update logic
 
-const app = express()
+const app = express();
 
 env.config();
-app.use(cors({
-    origin: ['https://tiffin-managment-client.vercel.app', 'http://localhost:3000'],
-    methods: ['GET', 'PUT', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
-    credentials: true
-}))
-app.use(express.json())
-app.use(cookieParser())
 
-var originsWhitelist = [
+// CORS setup
+const originsWhitelist = [
     'https://tiffin-managment-client.vercel.app',
     'http://localhost:3000'
 ];
-var corsOptions = {
+const corsOptions = {
     origin: function (origin, callback) {
-        var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        const isWhitelisted = originsWhitelist.indexOf(origin) !== -1 || !origin;
         callback(null, isWhitelisted);
     },
     credentials: true
-}
-app.use(cors(corsOptions))
+};
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
 
+// MongoDB connection + update existing providers
 mongoose.connect(process.env.MONGODB_CONNECTION, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => {
-    console.log("DataBase Connected")
-})
+}).then(async () => {
+    console.log("Database Connected");
+
+    // Update existing providers with new fields (if missing)
+    await Provider.updateMany({}, {
+        $set: {
+            aadhaarNo: "",
+            panNo: "",
+            gstNo: ""
+        }
+    });
+    console.log("Existing providers updated with aadhaarNo, panNo, and gstNo fields.");
+
+}).catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+});
+
+// CRON job to update food quantities at midnight
 const updateFood = async () => {
-    const foods = await foodModel.find()
+    const foods = await foodModel.find();
     for (let i = 0; i < foods.length; i++) {
         await foodModel.findByIdAndUpdate(foods[i]._id, { $set: { quantity: foods[i].enteredQuantity } });
     }
 }
 new CronJob('0 0 * * *', async () => {
-    await updateFood()
+    await updateFood();
 }, null, true, 'Asia/Kolkata');
 
+// Routes
 app.get('/', (req, res) => {
-    console.log("Server Is Running")
-}
-)
+    console.log("Server Is Running");
+    res.send("Server is running");
+});
 app.use('/api/v1/user', user);
-app.use('/api/v1/provider', provider)
-app.use('/api/v1/food', food)
-app.use('/api/v1/order', order)
+app.use('/api/v1/provider', provider);
+app.use('/api/v1/food', food);
+app.use('/api/v1/order', order);
 app.use('/api/v1/address', address);
 app.use('/api/v1/review', review);
-app.use('/api/v1/initialData', initialData)
+app.use('/api/v1/initialData', initialData);
 
-
+// Start server
 app.listen(process.env.PORT, () => {
-    console.log("Server is Running on port " + process.env.PORT)
-})
+    console.log("Server is running on port " + process.env.PORT);
+});
