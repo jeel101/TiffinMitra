@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import HomePage from "./pages/Home.page";
+import MealSubscription from './components/Meal/MealSubscription'; //added
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import AllProvidersPage from "./pages/AllProviders.page";
@@ -45,6 +46,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/meal-subscription" element={<MealSubscription />} /> 
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/provider" element={<AllProvidersPage />} />
