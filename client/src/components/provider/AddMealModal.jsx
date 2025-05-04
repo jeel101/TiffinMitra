@@ -49,69 +49,101 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function AddMealModal({ open, setOpen }) {
-  const [name, setName] = useState("")
-  const [price, setPrice] = useState("")
-  const [veg, setVeg] = useState("")
-  const [quantity, setQuantity] = useState("")
-  const [description, setDescription] = useState("")
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [veg, setVeg] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [description, setDescription] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [diet, setDiet] = useState("");
+  const [cookTime, setCookTime] = useState("");
+  const [flavorProfile, setFlavorProfile] = useState("");
+  const [course, setCourse] = useState("");
+  const [state, setState] = useState("");
+  const [region, setRegion] = useState("");
+  const [festival, setFestival] = useState("");
+
+  let image;
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleTypeChange = (type) => {
     if (type === "veg") {
-      setVeg(true)
+      setVeg(true);
     } else {
-      setVeg(false)
+      setVeg(false);
     }
-  }
-  let image;
+  };
+
   const handleImage = (e) => {
     image = e.target.files[0];
-  }
-  const dispatch = useDispatch()
+  };
+
+  const dispatch = useDispatch();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = new FormData();
 
-    form.append("name", name)
-    form.append("price", price)
-    form.append("description", description)
-    form.append("isVeg", veg)
-    form.append("quantity", quantity)
-    form.append("foodImage", image)
+    form.append("name", name);
+    form.append("price", price);
+    form.append("description", description);
+    form.append("isVeg", veg);
+    form.append("quantity", quantity);
+    form.append("foodImage", image);
+    form.append("ingredients", JSON.stringify(ingredients.split(",").map(i => i.trim())));
+    form.append("diet", diet);
+    form.append("cook_time", cookTime);
+    form.append("flavor_profile", flavorProfile);
+    form.append("course", course);
+    form.append("state", state);
+    form.append("region", region);
+    form.append("festival", festival);
 
     dispatch(addFood(form));
     setOpen(false);
-    setName("")
-    setPrice("")
-    setDescription("")
-    image = ""
-    setVeg(false)
-  }
+
+    // Reset fields
+    setName("");
+    setPrice("");
+    setQuantity("");
+    setDescription("");
+    setVeg(false);
+    setIngredients("");
+    setDiet("");
+    setCookTime("");
+    setFlavorProfile("");
+    setCourse("");
+    setState("");
+    setRegion("");
+    setFestival("");
+  };
+
   return (
     <div>
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
-        open={open}
-      >
+      <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
           Add New Meal
         </BootstrapDialogTitle>
-        <form action="" className='flex flex-col gap-2 w-96' onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-2 w-96" onSubmit={handleSubmit}>
           <DialogContent dividers>
             <div className='flex flex-col gap-1'>
               <label htmlFor='name' className='font-semibold'>Name</label>
               <input type="text" value={name} required name="name" id="name" placeholder="Enter Name of Meal" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setName(e.target.value)} />
             </div>
+
             <div className='flex flex-col gap-1'>
               <label htmlFor="price" className='font-semibold'>Price</label>
-              <input type="Number" value={price} required name="price" id="price" placeholder="Enter Price of Meal" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setPrice(e.target.value)} />
+              <input type="number" value={price} required name="price" id="price" placeholder="Enter Price of Meal" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setPrice(e.target.value)} />
             </div>
+
             <div className='flex flex-col gap-1'>
-              <label htmlFor="price" className='font-semibold'>Enter Per Day Quantity</label>
-              <input type="Number" value={quantity} required name="quantity" id="quantity" placeholder="Enter Quantity" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setQuantity(e.target.value)} />
+              <label htmlFor="quantity" className='font-semibold'>Per Day Quantity</label>
+              <input type="number" value={quantity} required name="quantity" id="quantity" placeholder="Enter Quantity" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setQuantity(e.target.value)} />
             </div>
+
             <div className='flex flex-col gap-1'>
               <label htmlFor="type" className='font-semibold'>Type</label>
               <select name="type" required id="type" className='px-3 py-1 border rounded focus:outline-none' onChange={(e) => handleTypeChange(e.target.value)}>
@@ -120,13 +152,55 @@ export default function AddMealModal({ open, setOpen }) {
                 <option value="nonVeg">Non-Veg</option>
               </select>
             </div>
+
             <div className='flex flex-col gap-1'>
               <label htmlFor="description" className='font-semibold'>Description</label>
-              <textarea type="Number" value={description} required rows={3} name="desctiption" id="description" placeholder="Enter Description of Meal" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setDescription(e.target.value)} />
+              <textarea value={description} required rows={3} name="description" id="description" placeholder="Enter Description of Meal" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setDescription(e.target.value)} />
             </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="ingredients" className='font-semibold'>Ingredients (comma separated)</label>
+              <input type="text" value={ingredients} name="ingredients" id="ingredients" placeholder="e.g. rice, dal, paneer" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setIngredients(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="diet" className='font-semibold'>Diet Type</label>
+              <input type="text" value={diet} name="diet" id="diet" placeholder="e.g. Keto, Vegan" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setDiet(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="cookTime" className='font-semibold'>Cook Time (minutes)</label>
+              <input type="number" value={cookTime} name="cookTime" id="cookTime" placeholder="e.g. 30" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setCookTime(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="flavorProfile" className='font-semibold'>Flavor Profile</label>
+              <input type="text" value={flavorProfile} name="flavorProfile" id="flavorProfile" placeholder="e.g. spicy, sweet" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setFlavorProfile(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="course" className='font-semibold'>Course</label>
+              <input type="text" value={course} name="course" id="course" placeholder="e.g. main, dessert" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setCourse(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="state" className='font-semibold'>State</label>
+              <input type="text" value={state} name="state" id="state" placeholder="e.g. Punjab" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setState(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="region" className='font-semibold'>Region</label>
+              <input type="text" value={region} name="region" id="region" placeholder="e.g. North India" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setRegion(e.target.value)} />
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <label htmlFor="festival" className='font-semibold'>Festival</label>
+              <input type="text" value={festival} name="festival" id="festival" placeholder="e.g. Diwali, Eid" className="px-3 py-1 border rounded focus:outline-none" onChange={(e) => setFestival(e.target.value)} />
+            </div>
+
             <div className='flex flex-col gap-1'>
               <label htmlFor="image" className='font-semibold'>Image</label>
-              <input type="file" value={image} required name="price" id="image" placeholder="Enter Price of Meal" onChange={handleImage} />
+              <input type="file" required id="image" onChange={handleImage} />
             </div>
           </DialogContent>
           <DialogActions>

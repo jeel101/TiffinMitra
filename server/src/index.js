@@ -36,7 +36,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-// MongoDB connection + update existing providers
+// MongoDB connection + update existing providers and food docs
 mongoose.connect(process.env.MONGODB_CONNECTION, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -44,14 +44,29 @@ mongoose.connect(process.env.MONGODB_CONNECTION, {
     console.log("Database Connected");
 
     // Update existing providers with new fields (if missing)
-    await Provider.updateMany({}, {
-        $set: {
-            aadhaarNo: "",
-            panNo: "",
-            gstNo: ""
-        }
-    });
-    console.log("Existing providers updated with aadhaarNo, panNo, and gstNo fields.");
+    // await Provider.updateMany({}, {
+    //     $set: {
+    //         aadhaarNo: "",
+    //         panNo: "",
+    //         gstNo: ""
+    //     }
+    // });
+    // console.log("Existing providers updated with aadhaarNo, panNo, and gstNo fields.");
+
+    // ✅ Update existing food documents with new fields (if missing)
+    // await foodModel.updateMany({}, {
+    //     $set: {
+    //         ingredients: [],
+    //         diet: "",
+    //         cook_time: 0,
+    //         flavor_profile: "",
+    //         course: "",
+    //         state: "",
+    //         region: "",
+    //         festival: ""
+    //     }
+    // });
+    // console.log("Existing food documents updated with new fields.");
 
 }).catch((err) => {
     console.error("Error connecting to MongoDB:", err);

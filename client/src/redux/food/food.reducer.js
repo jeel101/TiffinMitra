@@ -2,17 +2,18 @@ import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
   foods: undefined,
+  allFoods: [],           // ✅ Added to store all food items (e.g., from MongoDB)
   loading: false,
   food: undefined,
   error: "",
 };
+
 const getNewFoods = (id, foods) => {
   let foodList = [];
-
   foodList = foods.filter((food) => id !== food._id);
-
   return foodList;
 };
+
 const foodSlice = createSlice({
   name: "Foods",
   initialState,
@@ -41,6 +42,9 @@ const foodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    setAllFoods: (state, action) => {
+      state.allFoods = action.payload;  // ✅ Added reducer to set allFoods
+    },
   },
 });
 
@@ -51,6 +55,7 @@ export const {
   getFoodByIdSuccess,
   addFoodSuccess,
   deleteFoodSuccess,
+  setAllFoods, // ✅ Exported the new action
 } = foodSlice.actions;
 
 export default foodSlice.reducer;
