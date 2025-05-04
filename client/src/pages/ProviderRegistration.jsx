@@ -37,9 +37,10 @@ function ProviderRegistration() {
       form.append("password", password);
       form.append("phoneNumber", phoneNumber);
       form.append("address", address);
-      form.append("aadhaarNo", aadhaarNo);
-      form.append("panNo", panNo);
-      form.append("gstNo", gstNo);
+      form.append("aadhaar", aadhaarNo);
+      form.append("pan", panNo);
+      form.append("gst", gstNo);
+
 
       if (providerLogo.length > 0)
         form.append("providerLogo", providerLogo[0])
