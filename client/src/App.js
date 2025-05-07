@@ -57,6 +57,8 @@ function App() {
       <Route path="/registerProvider" element={<ProviderRegistration />} />
       <Route path="/loginProvider" element={<ProviderLogin />} />
       <Route path="/dashboard" element={<StreamlitPage />} />      {/* added streamlit model using frame */}
+      <Route path="/provider/:provider/:food" element={<MealSubscription />} />  
+      {/* <Route path="/meal-subscription" element={<MealSubscription />} />          */}
       <Route
         path="/provider/dashboard"
         element={

@@ -1,18 +1,23 @@
 const express = require('express');
 const { addOrder, getUserOrders, getProvidersOrders, updateOrderStatus, deleteOrder } = require('../controllers/order');
 const { isProvider } = require('../middleware/isProvider');
-const { isUser } = require('../middleware/isUser')
+const { isUser } = require('../middleware/isUser');
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/',isUser,addOrder);
+// ✅ Debug route to confirm the route file is loaded and mounted correctly
+router.get('/test', (req, res) => {
+  res.send('✅ Order route is working');
+});
 
-router.get('/user',isUser, getUserOrders);
+router.post('/', isUser, addOrder);
+
+router.get('/user', isUser, getUserOrders);
 
 router.get('/provider', isProvider, getProvidersOrders);
 
-router.put('/updateStatus',updateOrderStatus);
+router.put('/updateStatus', updateOrderStatus);
 
-router.delete('/:_id',deleteOrder);
+router.delete('/:_id', deleteOrder);
 
 module.exports = router;

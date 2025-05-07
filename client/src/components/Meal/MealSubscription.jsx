@@ -54,7 +54,7 @@ function MealSubscription() {
       "key": 'rzp_test_BKdeeHUaCQjXvJ',
       "amount": Number(totalAmount) * 100,
       "currency": "INR",
-      "name": "TiffinWala",
+      "name": "Tiffin Mitra",
       "description": "Test Transaction",
       "handler": function (response) {
         if (response.razorpay_payment_id) {

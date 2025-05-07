@@ -107,10 +107,11 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
+// ... all your imports remain unchanged
+
 export default function ProductPage() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
-
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - 10) : 0;
@@ -123,110 +124,139 @@ export default function ProductPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const {foods,loading} = useSelector((state) => state.foods);
+
+  const { foods, loading } = useSelector((state) => state.foods);
   const [foodModal, setFoodModal] = useState(false);
-  const [activeFood, setActiveFood] = useState("")
-  const dispatch = useDispatch()
+  const [activeFood, setActiveFood] = useState("");
+  const dispatch = useDispatch();
+
   const foodDelete = (_id) => {
-    let confirm = window.confirm("Are You Sure You Want to Delete this Food")
-    if (confirm)
-      dispatch(deleteFood(_id))
-    else
-      return
-  }
+    let confirm = window.confirm("Are You Sure You Want to Delete this Food");
+    if (confirm) dispatch(deleteFood(_id));
+  };
+
   const handleFoodModal = (food) => {
     setActiveFood(food);
     setFoodModal(true);
-  }
-  if(loading){
-    return(
+  };
+
+  if (loading) {
+    return (
       <div className='w-full flex items-center justify-center' style={{ height: '85vh' }}>
         <CircularProgress />
       </div>
-    )
+    );
   }
+
   if (foods && foods.length <= 0) {
     return (
       <div className='flex items-center justify-center w-full py-3'>
         <p className='text-gray-500 text-lg'>No Meals Found</p>
       </div>
-    )
+    );
   }
+
   return (
     <>
-      {foods && <div className=''>
-        <FoodViewModal open={foodModal} setOpen={setFoodModal} foodDetails={activeFood} />
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell align='center'>Price</StyledTableCell>
-                <StyledTableCell align='center'>Quantity Left</StyledTableCell>
-                <StyledTableCell align='center'>Type</StyledTableCell>
-                <StyledTableCell align='left'>Image</StyledTableCell>
-                <StyledTableCell align='center'>Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? foods.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : foods
-              ).map((food) => (
-                <StyledTableRow key={food.name}>
-                  <StyledTableCell component="th" scope="row">
-                    {food.name}
-                  </StyledTableCell>
-                  <StyledTableCell align='center'>₹{food.price}</StyledTableCell>
-                  <StyledTableCell align='center'>{food.quantity}</StyledTableCell>
-                  <StyledTableCell align='center'>{`${food.isVeg ? 'Veg' : "Non-Veg"}`}</StyledTableCell>
-                  <StyledTableCell align='center'>
-                    <img src={food.image} alt="" className='w-20 h-20' />
-                  </StyledTableCell>
-                  <StyledTableCell align='center'>
-                    <div className='flex gap-2 items-center justify-center'>
-                      <button className='border px-1 pr-2 py-1 flex items-center rounded-md  text-white bg-blue-600' style={{ gap: '1px' }} onClick={() => handleFoodModal(food)}>
-                        <AiFillEye className='text-white' style={{ color: 'white', fontSize: '14px' }} />
-                        <span className='' >View</span>
-                      </button>
-                      <button className='border px-2 py-1 flex items-center rounded-md  bg-red-600 text-white' style={{ gap: '1px' }} onClick={() => foodDelete(food._id)}>
-                        <MdDelete className='text-white' style={{ color: 'white', fontSize: '14px' }} />
-                        <span>Delete</span>
-                      </button>
-                    </div>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+      {foods && (
+        <div>
+          <FoodViewModal open={foodModal} setOpen={setFoodModal} foodDetails={activeFood} />
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Name</StyledTableCell>
+                  <StyledTableCell align='center'>Price</StyledTableCell>
+                  <StyledTableCell align='center'>Quantity Left</StyledTableCell>
+                  <StyledTableCell align='center'>Type</StyledTableCell>
+                  <StyledTableCell align='left'>Image</StyledTableCell>
+                  <StyledTableCell align='center'>Actions</StyledTableCell>
                 </TableRow>
-              )}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[8, 16, { label: 'All', value: -1 }]}
-                  colSpan={3}
-                  count={foods.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      'aria-label': 'rows per page',
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      </div>}
+              </TableHead>
+              <TableBody>
+                {(rowsPerPage > 0
+                  ? foods.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  : foods
+                ).map((food) => (
+                  <StyledTableRow key={food.name}>
+                    <StyledTableCell component="th" scope="row">
+                      {food.name}
+                    </StyledTableCell>
+                    <StyledTableCell align='center'>₹{food.price}</StyledTableCell>
+                    <StyledTableCell align='center'>{food.quantity}</StyledTableCell>
+
+                    <StyledTableCell align="center">
+                    {(() => {
+                    const diet = (food.diet || '').toLowerCase();
+                    return diet.includes('veg') || diet.includes('vegetarian') ? 'Veg' : 'Non-Veg';
+                    })()}
+                    </StyledTableCell>
+
+                    <StyledTableCell align='center'>
+  <img
+    src={food.image}
+    alt={food.name}
+    className='w-20 h-20 object-cover rounded-md border'
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = 'https://via.placeholder.com/100?text=No+Image';
+    }}
+  />
+</StyledTableCell>
+
+                    <StyledTableCell align='center'>
+                      <div className='flex gap-2 items-center justify-center'>
+                        <button
+                          className='border px-1 pr-2 py-1 flex items-center rounded-md text-white bg-blue-600'
+                          style={{ gap: '1px' }}
+                          onClick={() => handleFoodModal(food)}
+                        >
+                          <AiFillEye className='text-white' style={{ fontSize: '14px' }} />
+                          <span>View</span>
+                        </button>
+                        <button
+                          className='border px-2 py-1 flex items-center rounded-md bg-red-600 text-white'
+                          style={{ gap: '1px' }}
+                          onClick={() => foodDelete(food._id)}
+                        >
+                          <MdDelete className='text-white' style={{ fontSize: '14px' }} />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[8, 16, { label: 'All', value: -1 }]}
+                    colSpan={3}
+                    count={foods.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      inputProps: {
+                        'aria-label': 'rows per page',
+                      },
+                      native: true,
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
     </>
   );
 }
